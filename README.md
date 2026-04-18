@@ -1,100 +1,100 @@
 # Plan Mode Visualizer
 
-> A Claude Code skill that turns Plan-mode clarifying questions into an interactive HTML preview, so you can *see* the alternatives (layouts, themes, flows, hierarchies) before you answer — and one click copies your picks back into the terminal.
+> 一个 Claude Code skill：在 Plan 模式需要反问你澄清问题时，生成一个交互式 HTML 预览，让你在点选前**看到**备选方案（布局、配色、流程、层级），一键把选择复制回终端。
 
-English · [简体中文](README.zh-CN.md)
+简体中文 · [English](README_en.md)
 
 ---
 
-## Install
+## 安装
 
-One-line install into Claude Code's user skills directory:
+一行命令安装到 Claude Code 的用户 skills 目录：
 
 ```bash
 git clone https://github.com/Antony7e4/plan-mode-visualizer.git ~/.claude/skills/plan-mode-visualizer
 ```
 
-Restart Claude Code or start a new session — the skill is picked up automatically.
+重启 Claude Code 或开一个新会话即可生效。
 
-## What it does
+## 它做什么
 
-When Claude Code enters **Plan mode** (or you say "interview me" / "ask me some clarifying questions before you build"), Claude normally fires a stream of text questions at you. But for questions about design style, UI layout, component arrangement — text alternatives are hard to picture clearly.
+当 Claude Code 进入 **Plan 模式**（或你说「采访我」/「先问我几个问题再开始」）时，Claude 通常会抛出一串文字问题。但对于设计风格、UI 布局、组件样式等问题，光靠文字很难清晰地理解。
 
-This skill steps in at those moments and produces a **single self-contained HTML file**:
+这个 skill 会在这些时刻介入，生成**一个独立的 HTML 文件**：
 
-- Each option rendered at the right fidelity — **wireframes** (layout), **high-fidelity mockups** (visual style), **Mermaid diagrams** (flow / state).
-- **Click to choose**, with a **live preview** where it makes sense (click "Dark" → the sample UI recolors instantly).
-- A sticky footer collects all selections; **"Copy answers"** writes a formatted string to your clipboard:
+- 把每个备选方案用合适的保真度呈现——**线框图**（布局类）、**高保真 mockup**（视觉风格类）、**Mermaid 流程图**（流程 / 状态机类）。
+- 让你**点击选择**，并在合适的场景提供**实时预览**（比如点「深色」→ 示例 UI 立刻换色）。
+- 把所有选择汇总在底部常驻栏，点击「**复制答案**」就把格式化好的字符串写进剪贴板：
   ```
-  Q1: A  (Card layout)
-  Q2: B  (Dark theme)
-  Q3: A  (Top navigation)
+  Q1: A  (卡片布局)
+  Q2: B  (深色主题)
+  Q3: A  (顶部导航)
   ```
-  Paste it back into the terminal as your reply.
+  你粘贴回终端作为回答即可。
 
-One HTML file, opened with `file://`, no server, no build step. Tailwind and Mermaid are loaded via CDN.
+只有一个 HTML 文件，用 `file://` 打开，不需要服务器、不需要构建。Tailwind 和 Mermaid 通过 CDN 加载。
 
-## When the skill triggers (and when it doesn't)
+## 触发条件（以及不触发的情况）
 
-Activates only when **both** conditions hold:
+**同时**满足以下两条才会触发：
 
-1. **Context** — Claude Code is in Plan mode, OR you explicitly ask for an interview / clarification round.
-2. **Content** — at least one upcoming question has a meaningful **visual, spatial, flow, or hierarchy** dimension. Examples that trigger:
-   - Layout: "top nav vs side nav", "2×2 grid vs single row"
-   - Visual style: "light vs dark", "rounded vs sharp buttons"
-   - Flow / state: "sync vs async processing pipeline"
-   - Hierarchy: "component tree shape", "schema nesting"
+1. **上下文条件** —— Claude Code 处于 Plan 模式，或者你明确要求进入澄清 / 采访流程。
+2. **内容条件** —— 至少有一个待问的问题带有明显的**视觉 / 空间 / 流程 / 层级**维度。会触发的例子：
+   - 布局类：「顶部导航 vs 侧边导航」「2×2 网格 vs 单排横向」
+   - 视觉风格类：「浅色 vs 深色」「圆角 vs 直角按钮」
+   - 流程 / 状态类：「同步处理 vs 异步队列」
+   - 层级结构类：「组件树形状」「数据 schema 嵌套」
 
-Does **not** trigger for pure technical choices (Postgres vs MySQL, timeout values, library versions) or when you've asked for a quick answer. Over-triggering is explicitly treated as a failure mode.
+**不会触发**的场景：纯技术选型（Postgres vs MySQL、超时值、库版本等），或者你已经要求快速回答。过度触发会制造噪音，这是明确的反模式。
 
-See [`assets/example-questions.md`](assets/example-questions.md) for three worked scenarios (dashboard page, upload feature, caching strategy) showing when it should and shouldn't fire.
+三个实际场景（Dashboard 页面、文件上传、缓存策略）见 [`assets/example-questions.md`](assets/example-questions.md)，演示了应触发和不应触发的判定过程。
 
-## How it fits into Plan mode
+## 在 Plan 模式里的位置
 
 ```
-┌─────────────────────────────┐
-│  You: build me a dashboard  │
-│      (Plan mode)            │
-└─────────────┬───────────────┘
+┌───────────────────────────┐
+│  你：帮我做一个 Dashboard │
+│      （Plan 模式）        │
+└─────────────┬─────────────┘
               │
               ▼
-      Claude drafts questions
+      Claude 起草澄清问题
               │
-       some visual? ──── no ──▶ ask in terminal only
+      有视觉维度？── 否 ──▶ 仅在终端提问
               │
-             yes
-              │
-              ▼
-   Skill generates plan-<ts>.html
+             是
               │
               ▼
-  Claude prints path + question list
+   Skill 生成 plan-<时间戳>.html
               │
               ▼
-   You open HTML → click → copy
+   Claude 在终端输出路径 + 问题清单
               │
               ▼
-   Paste "Q1: A  Q2: B …" in terminal
+   你打开 HTML → 点选 → 复制
               │
               ▼
-     Claude proceeds with build
+   在终端粘贴「Q1: A  Q2: B …」
+              │
+              ▼
+        Claude 继续开始实施
 ```
 
-## Repository contents
+## 目录结构
 
 ```
 plan-mode-visualizer/
-├── SKILL.md                     ← skill definition Claude Code loads
+├── SKILL.md                     ← skill 定义，Claude Code 启动时加载
 ├── assets/
-│   ├── template.html            ← base HTML Claude fills in per session
-│   └── example-questions.md     ← three worked scenarios (trigger / no-trigger)
+│   ├── template.html            ← Claude 每次会话基于它填充的 HTML 模板
+│   └── example-questions.md     ← 三个判定示例（何时触发、何时不触发）
 └── README.md / README.zh-CN.md
 ```
 
-- **`SKILL.md`** — the authoritative spec. Lists trigger rules, fidelity rules (low-fi for layout, hi-fi for style, Mermaid for flow, tree for hierarchy), required HTML structure, and the quality bar.
-- **`assets/template.html`** — a working starting point with header, three sample question sections (wireframe / hi-fi with live preview / Mermaid), sticky answer-collector footer, copy-to-clipboard, keyboard shortcuts (1/2/3). ~320 lines, self-contained.
-- **`assets/example-questions.md`** — scenarios Claude can pattern-match against.
+- **`SKILL.md`** —— 权威规范。列出触发规则、保真度规则（布局用低保真、风格用高保真、流程用 Mermaid、层级用树形）、HTML 必备结构、质量标准。
+- **`assets/template.html`** —— 一份可运行的起点，含 header、三种示例 section（线框图 / 高保真带实时预览 / Mermaid）、常驻底栏答案汇总、复制到剪贴板、键盘快捷键 1/2/3。约 320 行，单文件自包含。
+- **`assets/example-questions.md`** —— 让 Claude 做模式匹配的参考场景。
 
-## License
+## 许可协议
 
-MIT — see [LICENSE](LICENSE).
+MIT —— 见 [LICENSE](LICENSE)。
