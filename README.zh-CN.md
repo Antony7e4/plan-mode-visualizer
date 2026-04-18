@@ -8,7 +8,7 @@
 
 ## 它做什么
 
-当 Claude Code 进入 **Plan 模式**（或你说「采访我」/「先问我几个问题再开始」）时，Claude 通常会抛出一串文字问题。但对于类似「卡片布局还是列表布局」「浅色还是深色主题」「同步上传还是异步上传」这类问题，光靠文字想象既慢又容易误读。
+当 Claude Code 进入 **Plan 模式**（或你说「采访我」/「先问我几个问题再开始」）时，Claude 通常会抛出一串文字问题。但对于设计风格、UI布局、组件样式等问题，光靠文字很难清晰地理解。
 
 这个 skill 会在这些时刻介入，生成**一个独立的 HTML 文件**：
 
@@ -104,26 +104,6 @@ plan-mode-visualizer/
 - **`assets/template.html`** —— 一份可运行的起点，含 header、三种示例 section（线框图 / 高保真带实时预览 / Mermaid）、常驻底栏答案汇总、复制到剪贴板、键盘快捷键 1/2/3。约 320 行，单文件自包含。
 - **`assets/example-questions.md`** —— 让 Claude 做模式匹配的参考场景。
 
-## 自定义
-
-- 想改保真度规则（比如全部用高保真、不用 Mermaid）？编辑 `SKILL.md` 的 **"Fidelity rules"** 段。
-- 想改剪贴板里的输出格式？改 `assets/template.html` 的 copy handler，并同步更新 `SKILL.md` 的 "Answer collector" 段描述。
-- 想改保存路径（默认：项目根下的 `.claude-preview/`，否则 `/tmp/`）？编辑 `SKILL.md` 的 **"File location"** 段。
-
-`SKILL.md` 本身是 Claude 会读的说明文档 —— 用自然语言改规则即可，不需要改代码。
-
-## 为什么需要这个
-
-纯文字的澄清问答有两个典型失败模式：
-- **选错**：「2×2 网格」和「单排横向」在纸面上听着差不多，但在屏幕上体验差很远。
-- **糊弄过去**：一口气读五个抽象选项，人会累，干脆随便选一个或者说「你看着办」。
-
-把可比较的选项视觉化，把认知负担从"想象文字"变成"扫一眼图"，大致就是这么个事。
-
 ## 许可协议
 
 MIT —— 见 [LICENSE](LICENSE)。
-
-## 致谢
-
-基于 [Claude Code](https://claude.com/claude-code) 使用。`SKILL.md` 遵循 Claude Code skill 格式规范。
