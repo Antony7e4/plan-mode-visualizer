@@ -6,9 +6,19 @@
 
 ---
 
+## 安装
+
+一行命令安装到 Claude Code 的用户 skills 目录：
+
+```bash
+git clone https://github.com/Antony7e4/plan-mode-visualizer.git ~/.claude/skills/plan-mode-visualizer
+```
+
+重启 Claude Code 或开一个新会话即可生效。
+
 ## 它做什么
 
-当 Claude Code 进入 **Plan 模式**（或你说「采访我」/「先问我几个问题再开始」）时，Claude 通常会抛出一串文字问题。但对于设计风格、UI布局、组件样式等问题，光靠文字很难清晰地理解。
+当 Claude Code 进入 **Plan 模式**（或你说「采访我」/「先问我几个问题再开始」）时，Claude 通常会抛出一串文字问题。但对于设计风格、UI 布局、组件样式等问题，光靠文字很难清晰地理解。
 
 这个 skill 会在这些时刻介入，生成**一个独立的 HTML 文件**：
 
@@ -69,25 +79,6 @@
               ▼
         Claude 继续开始实施
 ```
-
-## 安装
-
-把 skill 文件夹放进 Claude Code 的用户 skills 目录：
-
-```bash
-git clone https://github.com/Antony7e4/plan-mode-visualizer.git \
-  ~/.claude/skills/plan-mode-visualizer
-```
-
-或者 clone 到任意位置后软链过去：
-
-```bash
-ln -s /path/to/plan-mode-visualizer ~/.claude/skills/plan-mode-visualizer
-```
-
-Claude Code 启动时会扫描 `~/.claude/skills/` 下的所有 skill。重启或开一个新会话后，它就会出现在可用 skill 列表里。
-
-**前置条件**：装了 Claude Code，有浏览器可以打开生成的 HTML。HTML 首次打开需联网（从 CDN 拉 Tailwind / Mermaid / Inter 字体），之后走浏览器缓存。
 
 ## 目录结构
 

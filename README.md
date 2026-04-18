@@ -6,23 +6,33 @@ English · [简体中文](README.zh-CN.md)
 
 ---
 
+## Install
+
+One-line install into Claude Code's user skills directory:
+
+```bash
+git clone https://github.com/Antony7e4/plan-mode-visualizer.git ~/.claude/skills/plan-mode-visualizer
+```
+
+Restart Claude Code or start a new session — the skill is picked up automatically.
+
 ## What it does
 
-When Claude Code enters **Plan mode** (or you say "interview me" / "采访我" / "ask me some clarifying questions before you build"), Claude normally fires a stream of text questions at you. For questions like *"card layout vs list layout"*, *"light theme vs dark theme"*, or *"sync vs async upload flow"*, text alternatives are slow to imagine and easy to misread.
+When Claude Code enters **Plan mode** (or you say "interview me" / "ask me some clarifying questions before you build"), Claude normally fires a stream of text questions at you. But for questions about design style, UI layout, component arrangement — text alternatives are hard to picture clearly.
 
-This skill detects those moments and produces a **single self-contained HTML file** that:
+This skill steps in at those moments and produces a **single self-contained HTML file**:
 
-- Shows each option as a **wireframe**, **high-fidelity mockup**, or **Mermaid diagram** — whichever fits the question type.
-- Lets you **click to choose**, with a **live preview** where it makes sense (e.g. click "Dark" → the sample UI recolors instantly).
-- Collects all your selections in a sticky footer and, on **"Copy answers"**, writes a formatted string like:
+- Each option rendered at the right fidelity — **wireframes** (layout), **high-fidelity mockups** (visual style), **Mermaid diagrams** (flow / state).
+- **Click to choose**, with a **live preview** where it makes sense (click "Dark" → the sample UI recolors instantly).
+- A sticky footer collects all selections; **"Copy answers"** writes a formatted string to your clipboard:
   ```
   Q1: A  (Card layout)
   Q2: B  (Dark theme)
   Q3: A  (Top navigation)
   ```
-  …straight to your clipboard. You paste it back into the terminal as your reply.
+  Paste it back into the terminal as your reply.
 
-One HTML file, opened with `file://`, no server, no build step. It uses Tailwind and Mermaid via CDN.
+One HTML file, opened with `file://`, no server, no build step. Tailwind and Mermaid are loaded via CDN.
 
 ## When the skill triggers (and when it doesn't)
 
@@ -70,25 +80,6 @@ See [`assets/example-questions.md`](assets/example-questions.md) for three worke
      Claude proceeds with build
 ```
 
-## Install
-
-Drop the skill folder into your Claude Code user skills directory:
-
-```bash
-git clone https://github.com/Antony7e4/plan-mode-visualizer.git \
-  ~/.claude/skills/plan-mode-visualizer
-```
-
-Or clone anywhere and symlink:
-
-```bash
-ln -s /path/to/plan-mode-visualizer ~/.claude/skills/plan-mode-visualizer
-```
-
-Claude Code discovers skills under `~/.claude/skills/` at startup. Restart Claude Code or open a new session, and the skill will appear in the available-skills list.
-
-**Requirements**: Claude Code, and a browser to open the generated HTML. The HTML itself needs an internet connection the first time (CDN fetch for Tailwind + Mermaid + Inter font); cached afterwards.
-
 ## Repository contents
 
 ```
@@ -104,26 +95,6 @@ plan-mode-visualizer/
 - **`assets/template.html`** — a working starting point with header, three sample question sections (wireframe / hi-fi with live preview / Mermaid), sticky answer-collector footer, copy-to-clipboard, keyboard shortcuts (1/2/3). ~320 lines, self-contained.
 - **`assets/example-questions.md`** — scenarios Claude can pattern-match against.
 
-## Customizing
-
-- Want different fidelity rules (e.g. always hi-fi, never Mermaid)? Edit the **"Fidelity rules"** section of `SKILL.md`.
-- Want a different clipboard output format? Edit the copy handler in `assets/template.html` and mirror the format description in `SKILL.md`'s "Answer collector" section.
-- Want a different save location (default: `.claude-preview/` in the project root, else `/tmp/`)? Edit the **"File location"** section of `SKILL.md`.
-
-`SKILL.md` is prose Claude reads — change the rules in plain language, no code changes needed.
-
-## Why this exists
-
-Text-only clarification rounds have two failure modes:
-- **You pick the wrong thing** because "2×2 grid" and "single row" sound similar on paper but feel very different on screen.
-- **You skip the question** with a shrug because reading five abstract options is tiring.
-
-Visualizing the comparable options takes the cognitive load off you and puts it onto a 2-second glance. That's the whole idea.
-
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-## Credits
-
-Built for use with [Claude Code](https://claude.com/claude-code). `SKILL.md` follows the Claude Code skill format.
